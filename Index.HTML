@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Apps</title>
+    <link rel="icon" href="https://myapps.classlink.com/assets/img/icons/favicon-32x32.png" type="image/png">
+    <!-- Hacker-style monospaced font -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global styles: dark background, neon green accents for that hacker feel */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #111;
+            color: #33ff33;
+            font-family: 'Source Code Pro', monospace;
+            line-height: 1.6;
+        }
+        /* Login container covers the full viewport */
+        #loginContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            #loginContainer h1 {
+                margin-bottom: 20px;
+            }
+
+            #loginContainer input {
+                padding: 10px;
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+                background: #222;
+                border: 1px solid #33ff33;
+                color: #33ff33;
+                border-radius: 4px;
+                width: 200px;
+                text-align: center;
+            }
+
+            #loginContainer button {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+                background: #000;
+                border: 1px solid #33ff33;
+                color: #33ff33;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+                #loginContainer button:hover {
+                    background: #222;
+                }
+
+        #loginError {
+            color: #ff3333;
+            margin-top: 5px;
+        }
+        /* Header styling */
+        header {
+            background: #000;
+            border-bottom: 2px solid #33ff33;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px #33ff33;
+        }
+
+            header h1 {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+        /* Home view displaying game cards */
+        #homeView {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .game-card {
+            background: #222;
+            border: 1px solid #33ff33;
+            border-radius: 8px;
+            width: 200px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .game-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 10px #33ff33;
+            }
+
+            .game-card h2 {
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+
+            .game-card p {
+                font-size: 0.9rem;
+                text-align: center;
+                color: #66ff66;
+            }
+        /* Game view container: arrange game content and settings panel side by side */
+        #gameView {
+            display: none;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .game-content {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Back button styling */
+        .back-button {
+            align-self: flex-start;
+            margin-bottom: 10px;
+            background: none;
+            border: 1px solid #33ff33;
+            color: #33ff33;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: 'Source Code Pro', monospace;
+            transition: background 0.2s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            position: relative;
+            z-index: 100;
+        }
+
+            .back-button:hover {
+                background: #222;
+            }
+        /* Responsive embedded game container using intrinsic ratio technique */
+        .embed-container {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            /* Default 16:9 aspect ratio */
+            padding-top: 56.25%;
+            border: 1px solid #33ff33;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px #33ff33;
+        }
+
+            .embed-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+        /* Sidebar: Settings panel for display options */
+        .settings-panel {
+            flex: 1;
+            background: #000;
+            border: 1px solid #33ff33;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 0 10px #33ff33;
+            color: #33ff33;
+        }
+
+            .settings-panel h2 {
+                margin-bottom: 10px;
+                font-size: 1.2rem;
+            }
+
+            .settings-panel label,
+            .settings-panel select,
+            .settings-panel input,
+            .settings-panel button {
+                display: block;
+                margin-bottom: 10px;
+                width: 100%;
+            }
+
+            .settings-panel input {
+                padding: 5px;
+                background: #222;
+                border: 1px solid #33ff33;
+                color: #33ff33;
+                border-radius: 4px;
+            }
+
+            .settings-panel button {
+                background: #111;
+                border: 1px solid #33ff33;
+                color: #33ff33;
+                padding: 5px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+                .settings-panel button:hover {
+                    background: #222;
+
+                }
+    </style>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="loginContainer">
+        <h1 style="font-family: 'Source Code Pro', monospace">Enter Password to Login</h1>
+        <input type="password" id="pinInput" placeholder="Enter Password" />
+        <button onclick="checkPIN()">Login</button>
+        <div id="loginError"></div>
+    </div>
+
+    <!-- Main Content (hidden by login until correct PIN is entered) -->
+    <header>
+        <h1>Hidden Games!</h1>
+    </header>
+    <h5 style="text-align: center">Hello to anybody playing these games! Some of them have ads sorry. All you have to do to bypass the ads is in the bottom right corner of the screen click skip ad. Also one other amazing thing, this website saves your game data! Have Fun!</h5>
+    <h5 style="text-align: center">If you would like a game to be added just request it to you know who!</h5>
+    <h3 style="text-align: center">Attention all players before playing any games if your game freezes while playing just click the back button and then reload the game!</h3>
+    <h3 style="text-align: left">Current Ammount Of Games: 9</h3>
+
+    <!-- Home View: Select a game -->
+    <div id="homeView">
+        <!-- Game Card 1 -->
+        <div class="game-card" onclick="openGame('game1')">
+            <h2>Stack Fire Ball!</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Only Mouse!</p>
+        </div>
+        <!-- Game Card 2 -->
+        <div class="game-card" onclick="openGame('game2')">
+            <h2>Stickman parkour</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Fingers!</p>
+        </div>
+        <!-- Game Card 3 -->
+        <div class="game-card" onclick="openGame('game3')">
+            <h2>Cookie Clicker</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses A LOT OF Mouse!</p>
+        </div>
+        <!-- Game Card 4 -->
+        <div class="game-card" onclick="openGame('game4')">
+            <h2>Sniper Elite</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Mouse Movement!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game5')">
+            <h2>Learn To Fly!</h2>
+            <h3>Click to play!</h3>
+            <p style="color: yellow">Your Welcome!</p>
+            <p style="color: red">Uses alot of keyboard!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game6')">
+            <h2>Moto X3M</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Keybaord & More!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game7')">
+            <h2>Appel</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Keybaord & More!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game8')">
+            <h2>Slice Master</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Mouse A lot!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game9')">
+            <h2>Run 3</h2>
+            <h3>Click to play!</h3>
+            <p style="color: red">Be Careful Uses Keyboard And Mouse!</p>
+        </div>
+        <div class="game-card" onclick="openGame('game10')">
+            <h2>Red Ball 4 Vol.1</h2>
+            <h3>Click to play!</h3>
+            <p style="color: yellow">One of my favorites!</p>
+            <p style="color: red">Be Careful Uses Keyboard!</p>
+        </div>
+    </div>
+
+    <!-- Game View: Display the selected game and settings sidebar -->
+    <div id="gameView">
+        <div class="game-content">
+            <button class="back-button" onclick="backToHome()">Back</button>
+            <div class="embed-container" id="embedContainer">
+                <!-- The iframe for the game will be injected here -->
+            </div>
+        </div>
+        <div class="settings-panel">
+            <h2>Display Options</h2>
+            <label for="aspectRatioSelect">Aspect Ratio:</label>
+            <select id="aspectRatioSelect" onchange="updateAspectRatio()">
+                <option value="16:9">16:9</option>
+                <option value="4:3">4:3</option>
+                <option value="1:1">1:1</option>
+                <option value="21:9">21:9</option>
+                <option value="custom">Custom</option>
+            </select>
+            <div id="customInputs" style="display:none;">
+                <label for="customWidth">Width Ratio (e.g., 16)</label>
+                <input type="number" id="customWidth" placeholder="Enter width" min="1">
+                <label for="customHeight">Height Ratio (e.g., 9)</label>
+                <input type="number" id="customHeight" placeholder="Enter height" min="1">
+                <button onclick="applyCustomAspect()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Login Functionality:
+        const correctPIN = "test"; // Change this to your desired PIN.
+        function checkPIN() {
+            const pinInput = document.getElementById('pinInput').value;
+            const errorMsg = document.getElementById('loginError');
+            if (pinInput === correctPIN) {
+                document.getElementById('loginContainer').style.display = 'none';
+            } else {
+                errorMsg.textContent = "Invalid PIN, please try again.";
+            }
+        }
+
+        // 2. Game Navigation and Aspect Ratio Handling
+        const gameUrls = {
+            game1: "https://www.onlinegames.io/games/2021/unity/stack-fire-ball/index.html",
+            game2: "https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index-og.html",
+            game3: "https://cloud.onlinegames.io/games/2025/unity/cookie-clicker-pro/index-og.html",
+            game4: "https://www.onlinegames.io/games/2021/1/sniper-elite/index.html",
+            game5: "https://www.coolmathgames.com/sites/default/files/public_games/50509/",
+            game6: "https://www.coolmathgames.com/sites/default/files/public_games/47685/",
+            game7: "https://www.coolmathgames.com/sites/default/files/public_games/52458/",
+            game8: "https://www.coolmathgames.com/sites/default/files/public_games/50815/",
+            game9: "https://www.coolmathgames.com/sites/default/files/public_games/49436/",
+            game10: "https://www.coolmathgames.com/sites/default/files/public_games/48660/"
+        };
+
+        function openGame(gameId) {
+            // Hide the home view and show the game view
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('gameView').style.display = 'flex';
+            // Reset aspect ratio selector to default (16:9)
+            document.getElementById('aspectRatioSelect').value = "16:9";
+            updateAspectRatio();
+            // Load the selected game (replace iframe src with a valid playable URL)
+            const container = document.getElementById('embedContainer');
+            container.innerHTML = "";
+            const iframe = document.createElement('iframe');
+            iframe.src = gameUrls[gameId];
+            iframe.allowFullscreen = true;
+            container.appendChild(iframe);
+        }
+
+        function backToHome() {
+            // Hide the game view and show the home view; clear the iframe
+            document.getElementById('gameView').style.display = 'none';
+            document.getElementById('homeView').style.display = 'flex';
+            document.getElementById('embedContainer').innerHTML = "";
+        }
+
+        function updateAspectRatio() {
+            const select = document.getElementById('aspectRatioSelect');
+            const customInputs = document.getElementById('customInputs');
+            const embedContainer = document.getElementById('embedContainer');
+            const ratio = select.value;
+            if (ratio === 'custom') {
+                customInputs.style.display = 'block';
+            } else {
+                customInputs.style.display = 'none';
+                const ratios = {
+                    "16:9": 56.25,
+                    "4:3": 75,
+                    "1:1": 100,
+                    "21:9": 42.857
+                };
+                const newPadding = ratios[ratio] || 56.25;
+                embedContainer.style.paddingTop = newPadding + '%';
+            }
+        }
+
+        function applyCustomAspect() {
+            const width = parseFloat(document.getElementById('customWidth').value);
+            const height = parseFloat(document.getElementById('customHeight').value);
+            if (width > 0 && height > 0) {
+                const newPadding = (height / width) * 100;
+                document.getElementById('embedContainer').style.paddingTop = newPadding + '%';
+            }
+        }
+    </script>
+</body>
+</html>
